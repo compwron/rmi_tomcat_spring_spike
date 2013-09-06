@@ -10,10 +10,23 @@
 		<property name="accountService" ref="accountService" />
 	</bean>
 
-	<bean id="accountService" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
+	<bean id="accountServiceOld" class="org.springframework.remoting.rmi.RmiProxyFactoryBean">
 		<property name="serviceUrl" value="rmi://localhost:8084/AccountService" />
 		<property name="serviceInterface"
 			value="spike.AccountService" />
 	</bean>
+
+    <bean id="accountService" class="spike.rmi.SpikeRmiProxyFactoryBean">
+        <constructor-arg value="AccountService" />
+        <property name="config">
+            <bean class="org.googlecode.rmilbclient.RmiLbServiceConfig">
+                <property name="serviceInterface"
+                          value="spike.AccountService" />
+                <property name="lookupStubOnStartup" value="false" />
+                <property name="monitorPeriod" value="600" />
+            </bean>
+        </property>
+        <property name="serviceUrlList" value="#{systemProperties.SERVER_RMI_HOSTS}" />
+    </bean>
 
 </beans>
